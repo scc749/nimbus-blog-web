@@ -1,0 +1,414 @@
+/* markdown-content */
+.markdown-content {
+  line-height: 1.8;
+  color: hsl(var(--heroui-foreground));
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+.markdown-content * {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.markdown-content h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 2rem 0 1rem 0;
+  color: hsl(var(--heroui-foreground));
+  border-bottom: 2px solid hsl(var(--heroui-primary));
+  padding-bottom: 0.5rem;
+}
+.markdown-content h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 1.5rem 0 0.75rem 0;
+  color: hsl(var(--heroui-foreground));
+}
+.markdown-content h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 1.25rem 0 0.5rem 0;
+  color: hsl(var(--heroui-foreground));
+}
+.markdown-content h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 1rem 0 0.5rem 0;
+  color: hsl(var(--heroui-foreground));
+}
+.markdown-content h5 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0.875rem 0 0.5rem 0;
+  color: hsl(var(--heroui-foreground));
+}
+.markdown-content h6 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin: 0.75rem 0 0.5rem 0;
+  color: hsl(var(--heroui-foreground));
+  opacity: 0.9;
+}
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  scroll-margin-top: 100px;
+}
+.markdown-content p {
+  margin: 1rem 0;
+  color: hsl(var(--heroui-default-600));
+}
+.markdown-content ul,
+.markdown-content ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+  list-style-position: outside;
+}
+.markdown-content li {
+  margin: 0.5rem 0;
+  color: hsl(var(--heroui-default-600));
+}
+.markdown-content li > ul,
+.markdown-content li > ol {
+  margin-top: 0.5rem;
+}
+.markdown-content .contains-task-list {
+  list-style: none;
+  padding-left: 0.25rem;
+}
+.markdown-content .task-list-item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+.markdown-content .task-list-item input[type="checkbox"] {
+  margin-top: 0.32rem;
+}
+.markdown-content code {
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.875rem;
+  white-space: break-spaces;
+  font-weight: 500;
+}
+.markdown-content :not(pre) > code {
+  background-color: hsl(var(--heroui-default-100));
+  color: hsl(var(--heroui-danger));
+  padding: 0.12rem 0.35rem;
+  border-radius: 0.375rem;
+  border: 1px solid hsl(var(--heroui-default-300));
+}
+.markdown-content pre {
+  background-color: transparent;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  max-width: 100%;
+  width: 100%;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  line-height: 1.7;
+  tab-size: 2;
+  -moz-tab-size: 2;
+}
+.markdown-content pre code {
+  background-color: transparent;
+  color: inherit;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  display: block;
+  white-space: inherit;
+}
+.markdown-content blockquote {
+  border-left: 4px solid hsl(var(--heroui-primary));
+  background-color: hsl(var(--heroui-default-50));
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: hsl(var(--heroui-default-600));
+}
+.markdown-content a {
+  color: hsl(var(--heroui-primary));
+  text-decoration: underline;
+  transition: color 0.2s ease;
+  text-underline-offset: 0.12em;
+  text-decoration-thickness: 0.08em;
+}
+.markdown-content a:hover {
+  color: hsl(var(--heroui-primary-600));
+}
+.markdown-content a:focus-visible {
+  outline: 2px solid hsl(var(--heroui-primary));
+  outline-offset: 2px;
+}
+.markdown-content strong {
+  font-weight: 600;
+  color: hsl(var(--heroui-foreground));
+}
+.markdown-content em {
+  font-style: italic;
+}
+.markdown-content mark {
+  background-color: hsl(var(--heroui-warning));
+  color: hsl(var(--heroui-foreground));
+  padding: 0.1rem 0.2rem;
+  border-radius: 0.125rem;
+}
+.markdown-content kbd {
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.75rem;
+  background-color: hsl(var(--heroui-default-100));
+  border: 1px solid hsl(var(--heroui-default-200));
+  border-bottom-width: 2px;
+  border-radius: 0.375rem;
+  padding: 0.15rem 0.4rem;
+  color: hsl(var(--heroui-default-700));
+}
+.markdown-content sup,
+.markdown-content sub {
+  font-size: 0.75rem;
+}
+.markdown-content img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 1rem auto;
+}
+.markdown-content hr {
+  border: none;
+  border-top: 1px solid hsl(var(--heroui-default-200));
+  margin: 2rem 0;
+}
+.markdown-content table {
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+@media (min-width: 768px) {
+  .markdown-content table {
+    display: table;
+    white-space: normal;
+    table-layout: fixed;
+  }
+}
+.markdown-content th,
+.markdown-content td {
+  border: 1px solid hsl(var(--heroui-default-200));
+  padding: 0.75rem;
+  text-align: left;
+}
+.markdown-content th {
+  background-color: hsl(var(--heroui-default-100));
+  font-weight: 600;
+  color: hsl(var(--heroui-foreground));
+}
+.markdown-content td {
+  color: hsl(var(--heroui-default-600));
+}
+@media (max-width: 640px) {
+  .markdown-content {
+    font-size: 0.875rem;
+    line-height: 1.7;
+  }
+  .markdown-content h1 {
+    font-size: 1.5rem;
+    margin: 1.5rem 0 0.75rem 0;
+  }
+  .markdown-content h2 {
+    font-size: 1.25rem;
+    margin: 1.25rem 0 0.5rem 0;
+  }
+  .markdown-content h3 {
+    font-size: 1.125rem;
+    margin: 1rem 0 0.5rem 0;
+  }
+  .markdown-content h4 {
+    font-size: 1rem;
+  }
+  .markdown-content h5 {
+    font-size: 0.9375rem;
+  }
+  .markdown-content h6 {
+    font-size: 0.875rem;
+  }
+  .markdown-content pre {
+    padding: 0.75rem;
+    font-size: 0.8rem;
+    margin: 1rem 0;
+    border-radius: 0.375rem;
+  }
+  .markdown-content blockquote {
+    padding: 0.75rem 1rem;
+    margin: 1rem 0;
+  }
+  .markdown-content table {
+    font-size: 0.8rem;
+  }
+  .markdown-content th,
+  .markdown-content td {
+    padding: 0.5rem;
+  }
+}
+@media (min-width: 641px) and (max-width: 1024px) {
+  .markdown-content {
+    font-size: 0.9rem;
+    line-height: 1.75;
+  }
+  .markdown-content h1 {
+    font-size: 1.75rem;
+  }
+  .markdown-content h2 {
+    font-size: 1.375rem;
+  }
+  .markdown-content h3 {
+    font-size: 1.25rem;
+  }
+  .markdown-content h4 {
+    font-size: 1.125rem;
+  }
+  .markdown-content h5 {
+    font-size: 1rem;
+  }
+  .markdown-content h6 {
+    font-size: 0.9rem;
+  }
+}
+@media (min-width: 1025px) {
+  .markdown-content {
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+}
+.dark .markdown-content code {
+  background-color: hsl(var(--heroui-default-200));
+}
+.dark .markdown-content pre {
+  background-color: transparent;
+  border-color: transparent;
+}
+.dark .markdown-content blockquote {
+  background-color: hsl(var(--heroui-default-100));
+}
+.dark .markdown-content a:focus-visible {
+  outline-color: hsl(var(--heroui-primary-600));
+}
+
+/* ===== rehype-pretty-code（Shiki）语法高亮样式 ===== */
+/* 容器与行内元素 */
+.markdown-content pre {
+  overflow-x: auto;
+  padding: 1rem 0;
+}
+.markdown-content pre [data-line] {
+  padding: 0 1rem;
+}
+/* 亮/暗主题颜色通过插件注入的 --shiki-* 变量控制 */
+.markdown-content code[data-theme] {
+  color: var(--shiki-foreground, var(--shiki-light));
+  background-color: var(--shiki-background, var(--shiki-light-bg));
+}
+.markdown-content code[data-theme] span {
+  color: inherit;
+}
+.markdown-content code[data-theme*=" "],
+.markdown-content code[data-theme*=" "] span {
+  color: var(--shiki-light);
+  background-color: var(--shiki-light-bg);
+}
+@media (prefers-color-scheme: dark) {
+  .markdown-content code[data-theme*=" "],
+  .markdown-content code[data-theme*=" "] span {
+    color: var(--shiki-dark);
+    background-color: var(--shiki-dark-bg);
+  }
+}
+.dark .markdown-content code[data-theme*=" "],
+.dark .markdown-content code[data-theme*=" "] span {
+  color: var(--shiki-dark);
+  background-color: var(--shiki-dark-bg);
+}
+.markdown-content :not(pre) > code[data-theme],
+.markdown-content :not(pre) > code[data-theme*=" "] {
+  color: hsl(var(--heroui-danger));
+  background-color: hsl(var(--heroui-default-100));
+}
+.markdown-content :not(pre) > code[data-theme] span,
+.markdown-content :not(pre) > code[data-theme*=" "] span {
+  color: inherit;
+  background-color: transparent;
+}
+.dark .markdown-content :not(pre) > code[data-theme],
+.dark .markdown-content :not(pre) > code[data-theme*=" "] {
+  color: hsl(var(--heroui-danger));
+  background-color: hsl(var(--heroui-default-200));
+}
+.dark .markdown-content :not(pre) > code[data-theme] span,
+.dark .markdown-content :not(pre) > code[data-theme*=" "] span {
+  color: inherit;
+  background-color: transparent;
+}
+/* 行高亮与字符高亮（可按需微调色阶） */
+.markdown-content [data-highlighted-line] {
+  background-color: rgba(255, 200, 0, 0.12);
+}
+.markdown-content [data-highlighted-chars] {
+  background-color: rgba(255, 0, 0, 0.15);
+  border-radius: 0.25rem;
+  padding: 0.1rem 0.15rem;
+}
+.markdown-content .footnotes {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid hsl(var(--heroui-default-200));
+}
+.markdown-content .footnotes p {
+  margin: 0.35rem 0;
+}
+/* 标题与说明（当使用 title/caption 元数据时） */
+.markdown-content [data-rehype-pretty-code-title] {
+  display: block;
+  font-size: 0.75rem;
+  color: hsl(var(--heroui-default-500));
+  padding: 0.5rem 0.75rem;
+  border: 1px solid hsl(var(--heroui-default-100));
+  border-bottom: none;
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+.markdown-content [data-rehype-pretty-code-figure] {
+  border: none;
+  border-radius: 0;
+}
+.markdown-content [data-rehype-pretty-code-figure] pre {
+  border: 1px solid hsl(var(--heroui-default-100));
+  border-radius: 0.5rem;
+}
+.markdown-content [data-rehype-pretty-code-caption] {
+  display: block;
+  font-size: 0.75rem;
+  color: hsl(var(--heroui-default-500));
+  padding: 0.5rem 0.75rem;
+  border: 1px solid hsl(var(--heroui-default-100));
+  border-top: none;
+  border-radius: 0 0 0.5rem 0.5rem;
+}
