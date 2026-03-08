@@ -94,6 +94,48 @@ export function TableOfContents({ content }: TableOfContentsProps) {
     };
   }, [tocItems]);
 
+  useEffect(() => {
+    if (!activeId) return;
+    const escape =
+      typeof CSS !== "undefined" && typeof CSS.escape === "function"
+        ? CSS.escape
+        : (v: string) => v.replace(/["\\]/g, "\\$&");
+    const activeEl = document.querySelector<HTMLElement>(
+      `[data-desktop-toc-item="${escape(activeId)}"]`,
+    );
+
+    if (!activeEl) return;
+    let scrollParent: HTMLElement | null = null;
+    let parent = activeEl.parentElement;
+
+    while (parent && parent !== document.body) {
+      const style = window.getComputedStyle(parent);
+      const overflowY = style.overflowY;
+      const canScroll =
+        (overflowY === "auto" || overflowY === "scroll") &&
+        parent.scrollHeight > parent.clientHeight + 1;
+
+      if (canScroll) {
+        scrollParent = parent;
+        break;
+      }
+      parent = parent.parentElement;
+    }
+
+    if (!scrollParent) return;
+    const parentRect = scrollParent.getBoundingClientRect();
+    const elRect = activeEl.getBoundingClientRect();
+    const padding = 12;
+    const topLimit = parentRect.top + padding;
+    const bottomLimit = parentRect.bottom - padding;
+
+    if (elRect.top < topLimit) {
+      scrollParent.scrollTop -= topLimit - elRect.top;
+    } else if (elRect.bottom > bottomLimit) {
+      scrollParent.scrollTop += elRect.bottom - bottomLimit;
+    }
+  }, [activeId]);
+
   const handleClick = (id: string) => {
     const element = document.getElementById(id);
 
@@ -124,6 +166,7 @@ export function TableOfContents({ content }: TableOfContentsProps) {
                     ? "text-primary font-medium bg-primary/10"
                     : "text-default-600 hover:bg-default-100"
                 }`}
+                data-desktop-toc-item={item.id}
                 variant="light"
                 onPress={() => handleClick(item.id)}
               >
