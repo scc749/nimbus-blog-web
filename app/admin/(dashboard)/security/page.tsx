@@ -66,6 +66,9 @@ export default function AdminSecurityPage() {
   const [qrUrl, setQrUrl] = useState("");
   const [secret, setSecret] = useState("");
   const [recoveryCodes, setRecoveryCodes] = useState<string[]>([]);
+  const [recoveryCodesMode, setRecoveryCodesMode] = useState<
+    "enable" | "reset" | null
+  >(null);
   const [otpCode, setOtpCode] = useState("");
   const [disableCode, setDisableCode] = useState("");
   const [twoFAMsg, setTwoFAMsg] = useState("");
@@ -140,6 +143,7 @@ export default function AdminSecurityPage() {
       setQrUrl(res.qrcode_image_base64);
       setSecret(res.secret);
       setRecoveryCodes([]);
+      setRecoveryCodesMode(null);
       setOtpCode("");
       setTwoFAStep("setup");
     } catch (e: unknown) {
@@ -157,6 +161,7 @@ export default function AdminSecurityPage() {
       const res = await twoFAVerify({ setup_id: setupId, code: otpCode });
 
       setRecoveryCodes(res.recovery_codes || []);
+      setRecoveryCodesMode("enable");
       setTwoFAStep("enabled");
       setTwoFAMsg("两步验证已启用，请保存恢复码并重新登录");
       setDisableCode("");
@@ -225,6 +230,7 @@ export default function AdminSecurityPage() {
       setQrUrl("");
       setSecret("");
       setRecoveryCodes([]);
+      setRecoveryCodesMode(null);
       setTwofaEnabled(false);
     } catch (e: unknown) {
       setTwoFAMsg(e instanceof Error ? e.message : "关闭失败");
@@ -239,6 +245,8 @@ export default function AdminSecurityPage() {
       const res = await twoFARecoveryReset({ code: disableCode });
 
       setRecoveryCodes(res.recovery_codes);
+      setRecoveryCodesMode("reset");
+      setTwoFAStep("enabled");
       setTwoFAMsg("恢复码已重置");
     } catch (e: unknown) {
       setTwoFAMsg(e instanceof Error ? e.message : "重置失败");
@@ -449,8 +457,48 @@ export default function AdminSecurityPage() {
 
           {twoFAStep === "enabled" && (
             <>
+              <Button
+                color="primary"
+                isLoading={twoFALoading}
+                onPress={handleSetup2FA}
+              >
+                生成/刷新 2FA 配置
+              </Button>
+              <Divider />
+              {twofaEnabled && (
+                <>
+                  <p className="text-sm text-default-500">
+                    已启用 2FA 的情况下，可使用验证码或恢复码进行关闭/重置：
+                  </p>
+                  <Input
+                    label="验证码/恢复码"
+                    placeholder="输入验证码或恢复码"
+                    value={disableCode}
+                    onValueChange={setDisableCode}
+                  />
+                  <div className="flex gap-2">
+                    <Button
+                      color="danger"
+                      isLoading={twoFALoading}
+                      onPress={requestDisable2FA}
+                    >
+                      关闭2FA
+                    </Button>
+                    <Button
+                      isLoading={twoFALoading}
+                      variant="flat"
+                      onPress={requestResetRecovery}
+                    >
+                      重置恢复码
+                    </Button>
+                  </div>
+                  <Divider />
+                </>
+              )}
               <p className="text-sm text-success">
-                两步验证已启用，请先保存恢复码，然后重新登录
+                {recoveryCodesMode === "enable"
+                  ? "两步验证已启用，请先保存恢复码，然后重新登录"
+                  : "恢复码已生成，请立即保存"}
               </p>
               <Divider />
               {recoveryCodes.length > 0 && (
@@ -481,9 +529,11 @@ export default function AdminSecurityPage() {
                     >
                       导出 CSV
                     </Button>
-                    <Button color="primary" onPress={handleRelogin}>
-                      确定并重新登录
-                    </Button>
+                    {recoveryCodesMode === "enable" && (
+                      <Button color="primary" onPress={handleRelogin}>
+                        确定并重新登录
+                      </Button>
+                    )}
                   </div>
                 </div>
               )}

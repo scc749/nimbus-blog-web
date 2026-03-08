@@ -142,6 +142,8 @@ lib/api/
 - `POST /api/admin/auth/2fa/setup`：请求体 `{}`，返回 `setup_id`、`secret`、`qrcode_image_base64`；此阶段仅用于“在 Authenticator 里添加条目”，不会生成恢复码
 - `POST /api/admin/auth/2fa/verify`：请求体 `{ setup_id, code }`；成功后返回 `recovery_codes`，并要求重新登录（后端会销毁会话）
 - `/admin/security` 页面在“验证成功”后必须引导用户先保存恢复码（复制/导出），再点击“确定并重新登录”
+- `POST /api/admin/auth/2fa/recovery/reset`：请求体 `{ code | recovery_code }`；成功后返回新的 `recovery_codes`，前端必须展示并引导用户重新保存（复制/导出），但不强制重新登录
+- `/admin/security` 页面在“展示恢复码”状态下也应保留“生成/刷新 2FA 配置”与“关闭 2FA / 重置恢复码”入口，避免重置后无法继续操作
 - `GET /api/admin/auth/profile`：返回 `AdminProfileDTO`，包含 `twofa_enabled` 字段，用于前端判断是否显示“关闭 2FA / 重置恢复码”模块
 
 ### 4.2 命名规则
