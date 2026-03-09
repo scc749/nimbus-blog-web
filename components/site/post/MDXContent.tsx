@@ -6,6 +6,8 @@ import { useState, useEffect } from "react";
 import { useRef } from "react";
 import { MDXRemote } from "next-mdx-remote";
 import { Image } from "@heroui/image";
+import { Button } from "@heroui/button";
+import { Tooltip } from "@heroui/tooltip";
 
 import { serializeMdxContent } from "@/lib/mdx/content";
 import { generateHeadingId } from "@/lib/mdx/toc";
@@ -14,6 +16,72 @@ import { useMDXComponents } from "@/components/site/post";
 interface MDXContentProps {
   content: string;
   source?: MDXRemoteSerializeResult | null;
+}
+
+function PreWithCopy(props: React.HTMLAttributes<HTMLPreElement>) {
+  const preRef = useRef<HTMLPreElement | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  const copy = async () => {
+    const pre = preRef.current;
+    const codeEl = pre?.querySelector("code");
+    const text = (codeEl?.textContent ?? pre?.textContent ?? "").replace(
+      /\n$/,
+      "",
+    );
+
+    if (!text) return;
+
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1200);
+    } catch {
+      const ta = document.createElement("textarea");
+
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      ta.style.top = "0";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try {
+        document.execCommand("copy");
+        setCopied(true);
+        window.setTimeout(() => setCopied(false), 1200);
+      } finally {
+        document.body.removeChild(ta);
+      }
+    }
+  };
+
+  return (
+    <div className="relative group">
+      <div className="absolute right-2 top-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+        <Tooltip
+          closeDelay={0}
+          content={copied ? "已复制" : "复制"}
+          delay={200}
+        >
+          <Button
+            isIconOnly
+            className="min-w-0 w-8 h-8 bg-content1/80 backdrop-blur border border-default-200"
+            size="sm"
+            variant="flat"
+            onPress={copy}
+          >
+            {copied ? "✓" : "⧉"}
+          </Button>
+        </Tooltip>
+      </div>
+      <pre
+        ref={preRef}
+        className={`overflow-x-auto whitespace-pre-wrap break-words max-w-full w-full ${props.className || ""}`}
+        {...props}
+      />
+    </div>
+  );
 }
 
 export function MDXContent({ content, source }: MDXContentProps) {
@@ -118,10 +186,7 @@ export function MDXContent({ content, source }: MDXContentProps) {
       );
     },
     pre: (props: React.HTMLAttributes<HTMLPreElement>) => (
-      <pre
-        className="overflow-x-auto whitespace-pre-wrap break-words max-w-full w-full"
-        {...props}
-      />
+      <PreWithCopy {...props} />
     ),
     table: (props: React.HTMLAttributes<HTMLTableElement>) => (
       <div className="overflow-x-auto max-w-full w-full">
