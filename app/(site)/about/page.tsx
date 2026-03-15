@@ -84,7 +84,7 @@ export default function AboutPage() {
       <div className="text-center mb-12">
         <h1 className={title({ size: "md" })}>关于我</h1>
         <div className={subtitle({ class: "mt-4" })}>
-          热爱技术，专注于现代前端开发
+          热爱技术，专注于现代全栈开发
         </div>
       </div>
 
