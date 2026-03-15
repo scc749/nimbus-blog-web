@@ -8,7 +8,7 @@ import { Chip } from "@heroui/chip";
 import { Button } from "@heroui/button";
 import { Link } from "@heroui/link";
 
-import { HeartIcon } from "@/components/common/icons";
+import { HeartIcon, PinIcon } from "@/components/common/icons";
 import { TruncatedText } from "@/components/common/utility";
 import { useUserAuth } from "@/context";
 import { togglePostLike, removePostLike } from "@/lib/api/v1/content";
@@ -68,32 +68,49 @@ export function ArticleCard({
     <Card className="h-full hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
       <CardHeader className="pb-2">
         <div className="flex flex-col gap-3 w-full">
-          <div className="relative w-full aspect-video mb-3 rounded-lg overflow-hidden">
+          <div className="relative w-full aspect-video mb-3 rounded-lg overflow-hidden group">
             <img
               alt={post.title}
-              className="absolute inset-0 w-full h-full object-cover object-center"
+              className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
               decoding="async"
               loading="lazy"
               src={coverImage}
             />
+            {post.is_featured && (
+              <div className="absolute top-2 right-2 z-10">
+                <Chip
+                  classNames={{
+                    base: "bg-gradient-to-br from-indigo-500 to-pink-500 border-small border-white/50 shadow-pink-500/30",
+                    content: "drop-shadow shadow-black text-white text-[10px] font-semibold",
+                  }}
+                  size="sm"
+                  startContent={<PinIcon className="text-white" size={12} />}
+                  variant="shadow"
+                >
+                  置顶
+                </Chip>
+              </div>
+            )}
           </div>
 
           <div className="flex items-start justify-between">
-            {post.category && (
-              <Chip
-                color={
-                  activeCategoryId === post.category.id
-                    ? "primary"
-                    : "secondary"
-                }
-                size="sm"
-                variant={
-                  activeCategoryId === post.category.id ? "solid" : "flat"
-                }
-              >
-                {post.category.name}
-              </Chip>
-            )}
+            <div className="flex flex-wrap items-center gap-2">
+              {post.category && (
+                <Chip
+                  color={
+                    activeCategoryId === post.category.id
+                      ? "primary"
+                      : "secondary"
+                  }
+                  size="sm"
+                  variant={
+                    activeCategoryId === post.category.id ? "solid" : "flat"
+                  }
+                >
+                  {post.category.name}
+                </Chip>
+              )}
+            </div>
             <div className="flex items-center gap-2">
               <span className="text-xs text-default-500">
                 {post.views || 0} 次阅读
