@@ -68,7 +68,7 @@ nimbus-blog-web/
 │       ├── layout/            # Navbar、Footer（Barrel export via index.ts）
 │       ├── notification/      # 站内通知（NotificationBell）（Barrel export via index.ts）
 │       └── post/              # 文章相关组件（Barrel export via index.ts）
-│           ├── ArticleCard.tsx       # 文章摘要卡片（博客/分类/标签列表复用）
+│           ├── ArticleCard.tsx       # 文章摘要卡片（博客/分类/标签列表复用，is_featured=true 显示“置顶”标签）
 │           ├── Comments.tsx
 │           ├── TableOfContents.tsx
 │           ├── MobileTableOfContents.tsx
@@ -292,6 +292,10 @@ interface Page<T> {
   total_pages: number;
 }
 ```
+
+前端分页器展示规则：
+- 所有使用 HeroUI `Pagination` 的列表页，默认**始终显示分页器**（即使 `total_pages <= 1`）
+- 当后端返回 `total_pages` 为 `0` 时，前端渲染时将 `total` 归一化为 `1`，避免分页组件异常
 
 查询参数命名（snake_case）：
 

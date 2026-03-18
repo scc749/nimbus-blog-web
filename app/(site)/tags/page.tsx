@@ -222,18 +222,16 @@ export default function TagsPage() {
               ))}
             </div>
           )}
-          {totalPages > 1 && (
-            <div className="flex justify-center mt-8">
-              <Pagination
-                showControls
-                showShadow
-                color="primary"
-                page={page}
-                total={totalPages}
-                onChange={setPage}
-              />
-            </div>
-          )}
+          <div className="flex justify-center mt-8">
+            <Pagination
+              showControls
+              showShadow
+              color="primary"
+              page={page}
+              total={Math.max(totalPages, 1)}
+              onChange={setPage}
+            />
+          </div>
           {posts.length === 0 && !loadingPosts && (
             <p className="text-center text-default-500 py-12">
               该标签下暂无文章

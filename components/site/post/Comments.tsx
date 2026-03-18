@@ -476,16 +476,14 @@ export function Comments({ postId }: CommentsProps) {
         )}
       </div>
 
-      {totalPages > 1 && (
-        <div className="flex justify-center mt-4">
-          <Pagination
-            showControls
-            page={page}
-            total={totalPages}
-            onChange={setPage}
-          />
-        </div>
-      )}
+      <div className="flex justify-center mt-4">
+        <Pagination
+          showControls
+          page={page}
+          total={Math.max(totalPages, 1)}
+          onChange={setPage}
+        />
+      </div>
     </div>
   );
 }

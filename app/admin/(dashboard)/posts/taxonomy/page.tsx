@@ -35,6 +35,7 @@ import { SearchIcon, DeleteIcon, EditIcon } from "@/components/common/icons";
 const PAGE_SIZE = 12;
 
 export default function TaxonomyPage() {
+  const [activeTab, setActiveTab] = useState<"categories" | "tags">("categories");
   const [categories, setCategories] = useState<CategoryDetail[]>([]);
   const [tags, setTags] = useState<TagDetail[]>([]);
   const [loading, setLoading] = useState(true);
@@ -267,7 +268,13 @@ export default function TaxonomyPage() {
         onValueChange={setSearch}
       />
 
-      <Tabs aria-label="Taxonomy tabs">
+      <Tabs
+        aria-label="Taxonomy tabs"
+        selectedKey={activeTab}
+        onSelectionChange={(key) =>
+          setActiveTab(key as "categories" | "tags")
+        }
+      >
         <Tab key="categories" title="分类">
           <div className="space-y-3">
             <Button color="primary" size="sm" onPress={openCat}>
@@ -309,16 +316,14 @@ export default function TaxonomyPage() {
             {categories.length === 0 && (
               <p className="text-center text-default-500">暂无分类</p>
             )}
-            {catTotalPages > 1 && (
-              <div className="flex justify-center">
-                <Pagination
-                  showControls
-                  page={catPage}
-                  total={catTotalPages}
-                  onChange={setCatPage}
-                />
-              </div>
-            )}
+            <div className="flex justify-center">
+              <Pagination
+                showControls
+                page={catPage}
+                total={Math.max(catTotalPages, 1)}
+                onChange={setCatPage}
+              />
+            </div>
           </div>
         </Tab>
         <Tab key="tags" title="标签">
@@ -362,16 +367,14 @@ export default function TaxonomyPage() {
             {tags.length === 0 && (
               <p className="text-center text-default-500">暂无标签</p>
             )}
-            {tagTotalPages > 1 && (
-              <div className="flex justify-center">
-                <Pagination
-                  showControls
-                  page={tagPage}
-                  total={tagTotalPages}
-                  onChange={setTagPage}
-                />
-              </div>
-            )}
+            <div className="flex justify-center">
+              <Pagination
+                showControls
+                page={tagPage}
+                total={Math.max(tagTotalPages, 1)}
+                onChange={setTagPage}
+              />
+            </div>
           </div>
         </Tab>
       </Tabs>

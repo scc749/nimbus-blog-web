@@ -231,16 +231,14 @@ export default function AdminFilesPage() {
         </Table>
       )}
 
-      {totalPages > 1 && (
-        <div className="flex justify-center">
-          <Pagination
-            showControls
-            page={page}
-            total={totalPages}
-            onChange={setPage}
-          />
-        </div>
-      )}
+      <div className="flex justify-center">
+        <Pagination
+          showControls
+          page={page}
+          total={Math.max(totalPages, 1)}
+          onChange={setPage}
+        />
+      </div>
 
       <Modal
         isOpen={deleteOpen}

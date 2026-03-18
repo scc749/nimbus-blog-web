@@ -187,17 +187,15 @@ export default function AdminNotificationsPage() {
                 </TableBody>
               </Table>
             )}
-            {userTotalPages > 1 && (
-              <div className="flex justify-center pt-2">
-                <Pagination
-                  showControls
-                  page={userPage}
-                  size="sm"
-                  total={userTotalPages}
-                  onChange={setUserPage}
-                />
-              </div>
-            )}
+            <div className="flex justify-center pt-2">
+              <Pagination
+                showControls
+                page={userPage}
+                size="sm"
+                total={Math.max(userTotalPages, 1)}
+                onChange={setUserPage}
+              />
+            </div>
           </CardBody>
         </Card>
 
