@@ -898,6 +898,7 @@ post/[slug]/page.tsx
 - 后端在 `NewUserJWTMiddleware` 内完成“验签 + refresh 会话有效性校验（Redis refresh_token:{userID}）”；会话无效访问需要鉴权的接口返回 `401`
 - 登录和刷新 token 时校验 `user.Status`，禁用用户返回 `403 account disabled`
 - 前端应在 refresh 返回 `403` 时提示“账号已被禁用”，并清空 access token 与本地登录态
+- refresh 接口响应体仅返回 `access_token/token_type/expires_in`（与 login 一致）；refresh token 只通过 HttpOnly Cookie 写入
 
 ### 10.5 代码语法高亮（rehype-pretty-code / Shiki）
 
