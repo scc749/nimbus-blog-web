@@ -63,6 +63,7 @@ export default function AdminPostsPage() {
     null,
   );
   const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
   const pageSize = 10;
 
   const fetchPosts = useCallback(async () => {
@@ -106,6 +107,7 @@ export default function AdminPostsPage() {
     const p = posts.find((x) => x.id === id);
 
     if (!p) return;
+    setDeleteError("");
     setPendingDelete(p);
     openDelete();
   };
@@ -290,6 +292,7 @@ export default function AdminPostsPage() {
           closeDelete();
           setPendingDelete(null);
           setDeleting(false);
+          setDeleteError("");
         }}
       >
         <ModalContent>
@@ -304,6 +307,7 @@ export default function AdminPostsPage() {
             <div className="rounded-lg bg-danger-50 p-3 text-sm text-danger-700 dark:bg-danger-50/10 dark:text-danger-400">
               删除后不可恢复。
             </div>
+            {deleteError && <p className="text-danger text-sm">{deleteError}</p>}
           </ModalBody>
           <ModalFooter>
             <Button
@@ -312,6 +316,7 @@ export default function AdminPostsPage() {
                 if (deleting) return;
                 closeDelete();
                 setPendingDelete(null);
+                setDeleteError("");
               }}
             >
               取消
@@ -323,12 +328,13 @@ export default function AdminPostsPage() {
                 if (!pendingDelete) return;
                 setDeleting(true);
                 try {
+                  setDeleteError("");
                   await deletePost(pendingDelete.id);
                   fetchPosts();
                   closeDelete();
                   setPendingDelete(null);
-                } catch {
-                  // ignore
+                } catch (e: unknown) {
+                  setDeleteError(e instanceof Error ? e.message : "删除失败");
                 } finally {
                   setDeleting(false);
                 }

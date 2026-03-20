@@ -39,6 +39,7 @@ export default function AdminCommentsPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [statusFilter, setStatusFilter] = useState<string>("pending");
   const [loading, setLoading] = useState(true);
+  const [actionError, setActionError] = useState("");
   const [sortBy, setSortBy] = useState("created_at");
   const [sortOrder, setSortOrder] = useState<"ascending" | "descending">(
     "descending",
@@ -80,19 +81,21 @@ export default function AdminCommentsPage() {
 
   const handleApprove = async (id: number) => {
     try {
+      setActionError("");
       await updateCommentStatus(id, { status: "approved" });
       fetchComments();
-    } catch {
-      // Ignore 忽略错误。
+    } catch (e: unknown) {
+      setActionError(e instanceof Error ? e.message : "操作失败");
     }
   };
 
   const handleReject = async (id: number) => {
     try {
+      setActionError("");
       await updateCommentStatus(id, { status: "rejected" });
       fetchComments();
-    } catch {
-      // Ignore 忽略错误。
+    } catch (e: unknown) {
+      setActionError(e instanceof Error ? e.message : "操作失败");
     }
   };
 
@@ -120,6 +123,8 @@ export default function AdminCommentsPage() {
         <Tab key="approved" title="已通过" />
         <Tab key="rejected" title="已拒绝" />
       </Tabs>
+
+      {actionError && <p className="text-danger text-sm">{actionError}</p>}
 
       {loading ? (
         <div className="flex justify-center py-12">
@@ -233,6 +238,7 @@ export default function AdminCommentsPage() {
           closeDelete();
           setPendingDelete(null);
           setDeleting(false);
+          setActionError("");
         }}
       >
         <ModalContent>
@@ -250,6 +256,7 @@ export default function AdminCommentsPage() {
             <div className="rounded-lg bg-danger-50 p-3 text-sm text-danger-700 dark:bg-danger-50/10 dark:text-danger-400">
               删除后不可恢复。
             </div>
+            {actionError && <p className="text-danger text-sm">{actionError}</p>}
           </ModalBody>
           <ModalFooter>
             <Button
@@ -258,6 +265,7 @@ export default function AdminCommentsPage() {
                 if (deleting) return;
                 closeDelete();
                 setPendingDelete(null);
+                setActionError("");
               }}
             >
               取消
@@ -269,12 +277,13 @@ export default function AdminCommentsPage() {
                 if (!pendingDelete) return;
                 setDeleting(true);
                 try {
+                  setActionError("");
                   await deleteComment(pendingDelete.id);
                   fetchComments();
                   closeDelete();
                   setPendingDelete(null);
-                } catch {
-                  // Ignore 忽略错误。
+                } catch (e: unknown) {
+                  setActionError(e instanceof Error ? e.message : "删除失败");
                 } finally {
                   setDeleting(false);
                 }

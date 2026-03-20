@@ -85,6 +85,7 @@ export default function AdminFilesPage() {
     null,
   );
   const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
   const pageSize = 10;
 
   const fetchFiles = useCallback(async () => {
@@ -115,6 +116,7 @@ export default function AdminFilesPage() {
     const f = files.find((x) => x.object_key === objectKey);
 
     if (!f) return;
+    setDeleteError("");
     setPendingDelete(f);
     openDelete();
   };
@@ -246,6 +248,7 @@ export default function AdminFilesPage() {
           closeDelete();
           setPendingDelete(null);
           setDeleting(false);
+          setDeleteError("");
         }}
       >
         <ModalContent>
@@ -262,6 +265,7 @@ export default function AdminFilesPage() {
             <div className="rounded-lg bg-danger-50 p-3 text-sm text-danger-700 dark:bg-danger-50/10 dark:text-danger-400">
               将同时删除对象存储与元数据，且不可恢复。
             </div>
+            {deleteError && <p className="text-danger text-sm">{deleteError}</p>}
           </ModalBody>
           <ModalFooter>
             <Button
@@ -270,6 +274,7 @@ export default function AdminFilesPage() {
                 if (deleting) return;
                 closeDelete();
                 setPendingDelete(null);
+                setDeleteError("");
               }}
             >
               取消
@@ -281,12 +286,13 @@ export default function AdminFilesPage() {
                 if (!pendingDelete) return;
                 setDeleting(true);
                 try {
+                  setDeleteError("");
                   await deleteFile(pendingDelete.object_key);
                   fetchFiles();
                   closeDelete();
                   setPendingDelete(null);
-                } catch {
-                  // Ignore 忽略错误。
+                } catch (e: unknown) {
+                  setDeleteError(e instanceof Error ? e.message : "删除失败");
                 } finally {
                   setDeleting(false);
                 }

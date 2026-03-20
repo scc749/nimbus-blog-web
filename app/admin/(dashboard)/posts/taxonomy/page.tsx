@@ -60,6 +60,8 @@ export default function TaxonomyPage() {
   const [newName, setNewName] = useState("");
   const [newSlug, setNewSlug] = useState("");
   const [slugLoading, setSlugLoading] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [createError, setCreateError] = useState("");
 
   const {
     isOpen: editOpen,
@@ -72,6 +74,7 @@ export default function TaxonomyPage() {
   const [editSlug, setEditSlug] = useState("");
   const [editSlugLoading, setEditSlugLoading] = useState(false);
   const [editSaving, setEditSaving] = useState(false);
+  const [editError, setEditError] = useState("");
 
   const {
     isOpen: deleteOpen,
@@ -84,6 +87,7 @@ export default function TaxonomyPage() {
     name: string;
   } | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -122,6 +126,8 @@ export default function TaxonomyPage() {
 
   const handleCreateCategory = async () => {
     if (!newName) return;
+    setCreating(true);
+    setCreateError("");
     try {
       await createCategory({
         name: newName,
@@ -131,13 +137,17 @@ export default function TaxonomyPage() {
       closeCat();
       setNewName("");
       setNewSlug("");
-    } catch {
-      // Ignore 忽略错误。
+    } catch (e: unknown) {
+      setCreateError(e instanceof Error ? e.message : "创建失败");
+    } finally {
+      setCreating(false);
     }
   };
 
   const handleCreateTag = async () => {
     if (!newName) return;
+    setCreating(true);
+    setCreateError("");
     try {
       await createTag({
         name: newName,
@@ -147,8 +157,10 @@ export default function TaxonomyPage() {
       closeTag();
       setNewName("");
       setNewSlug("");
-    } catch {
-      // Ignore 忽略错误。
+    } catch (e: unknown) {
+      setCreateError(e instanceof Error ? e.message : "创建失败");
+    } finally {
+      setCreating(false);
     }
   };
 
@@ -185,6 +197,7 @@ export default function TaxonomyPage() {
     setEditId(c.id);
     setEditName(c.name);
     setEditSlug(c.slug);
+    setEditError("");
     openEdit();
   };
 
@@ -193,12 +206,14 @@ export default function TaxonomyPage() {
     setEditId(t.id);
     setEditName(t.name);
     setEditSlug(t.slug);
+    setEditError("");
     openEdit();
   };
 
   const handleUpdateTaxonomy = async () => {
     if (!editId || !editName.trim() || !editSlug.trim()) return;
     setEditSaving(true);
+    setEditError("");
     try {
       if (editType === "category") {
         await updateCategory(editId, { name: editName.trim(), slug: editSlug });
@@ -210,8 +225,8 @@ export default function TaxonomyPage() {
       setEditId(null);
       setEditName("");
       setEditSlug("");
-    } catch {
-      // Ignore 忽略错误。
+    } catch (e: unknown) {
+      setEditError(e instanceof Error ? e.message : "保存失败");
     } finally {
       setEditSaving(false);
     }
@@ -222,6 +237,7 @@ export default function TaxonomyPage() {
 
     if (!c) return;
     setPendingDelete({ type: "category", id: c.id, name: c.name });
+    setDeleteError("");
     openDelete();
   };
 
@@ -230,6 +246,7 @@ export default function TaxonomyPage() {
 
     if (!t) return;
     setPendingDelete({ type: "tag", id: t.id, name: t.name });
+    setDeleteError("");
     openDelete();
   };
 
@@ -386,6 +403,7 @@ export default function TaxonomyPage() {
           setEditId(null);
           setEditName("");
           setEditSlug("");
+          setEditError("");
         }}
       >
         <ModalContent>
@@ -419,6 +437,7 @@ export default function TaxonomyPage() {
                 生成
               </Button>
             </div>
+            {editError && <p className="text-danger text-sm">{editError}</p>}
           </ModalBody>
           <ModalFooter>
             <Button
@@ -428,6 +447,7 @@ export default function TaxonomyPage() {
                 setEditId(null);
                 setEditName("");
                 setEditSlug("");
+                setEditError("");
               }}
             >
               取消
@@ -449,6 +469,10 @@ export default function TaxonomyPage() {
         onClose={() => {
           closeCat();
           closeTag();
+          setNewName("");
+          setNewSlug("");
+          setCreateError("");
+          setCreating(false);
         }}
       >
         <ModalContent>
@@ -480,6 +504,9 @@ export default function TaxonomyPage() {
                 生成
               </Button>
             </div>
+            {createError && (
+              <p className="text-danger text-sm">{createError}</p>
+            )}
           </ModalBody>
           <ModalFooter>
             <Button
@@ -489,12 +516,16 @@ export default function TaxonomyPage() {
                 closeTag();
                 setNewName("");
                 setNewSlug("");
+                setCreateError("");
+                setCreating(false);
               }}
             >
               取消
             </Button>
             <Button
               color="primary"
+              isDisabled={!newName.trim()}
+              isLoading={creating}
               onPress={catOpen ? handleCreateCategory : handleCreateTag}
             >
               创建
@@ -509,6 +540,7 @@ export default function TaxonomyPage() {
           closeDelete();
           setPendingDelete(null);
           setDeleting(false);
+          setDeleteError("");
         }}
       >
         <ModalContent>
@@ -524,6 +556,7 @@ export default function TaxonomyPage() {
             <div className="rounded-lg bg-danger-50 p-3 text-sm text-danger-700 dark:bg-danger-50/10 dark:text-danger-400">
               删除后不可恢复。
             </div>
+            {deleteError && <p className="text-danger text-sm">{deleteError}</p>}
           </ModalBody>
           <ModalFooter>
             <Button
@@ -532,6 +565,7 @@ export default function TaxonomyPage() {
                 if (deleting) return;
                 closeDelete();
                 setPendingDelete(null);
+                setDeleteError("");
               }}
             >
               取消
@@ -543,6 +577,7 @@ export default function TaxonomyPage() {
                 if (!pendingDelete) return;
                 setDeleting(true);
                 try {
+                  setDeleteError("");
                   if (pendingDelete.type === "category") {
                     await deleteCategory(pendingDelete.id);
                   } else {
@@ -551,8 +586,8 @@ export default function TaxonomyPage() {
                   await loadData();
                   closeDelete();
                   setPendingDelete(null);
-                } catch {
-                  // Ignore 忽略错误。
+                } catch (e: unknown) {
+                  setDeleteError(e instanceof Error ? e.message : "删除失败");
                 } finally {
                   setDeleting(false);
                 }

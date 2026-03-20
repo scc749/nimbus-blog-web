@@ -39,6 +39,7 @@ export default function AdminUsersPage() {
   const [activeKeyword, setActiveKeyword] = useState("");
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(true);
+  const [actionError, setActionError] = useState("");
   const [sortBy, setSortBy] = useState("created_at");
   const [sortOrder, setSortOrder] = useState<"ascending" | "descending">(
     "descending",
@@ -83,6 +84,7 @@ export default function AdminUsersPage() {
     if (!isOpen) {
       setPendingDisableUser(null);
       setConfirmingDisable(false);
+      setActionError("");
     }
   }, [isOpen]);
 
@@ -91,10 +93,13 @@ export default function AdminUsersPage() {
     newStatus: "active" | "disabled",
   ) => {
     try {
+      setActionError("");
       await updateUserStatus(userId, { status: newStatus });
       fetchUsers();
-    } catch {
-      // ignore
+      return true;
+    } catch (e: unknown) {
+      setActionError(e instanceof Error ? e.message : "操作失败");
+      return false;
     }
   };
 
@@ -137,6 +142,8 @@ export default function AdminUsersPage() {
             <SelectItem key="disabled">禁用</SelectItem>
           </Select>
         </div>
+
+        {actionError && <p className="text-danger text-sm">{actionError}</p>}
 
         {loading ? (
           <div className="flex justify-center py-12">
@@ -206,7 +213,7 @@ export default function AdminUsersPage() {
                       variant="flat"
                       onPress={() => {
                         if (u.status === "active") requestDisable(u);
-                        else handleSetStatus(u.id, "active");
+                        else void handleSetStatus(u.id, "active");
                       }}
                     >
                       {u.status === "active" ? "禁用" : "启用"}
@@ -249,12 +256,14 @@ export default function AdminUsersPage() {
                     禁用后该用户将无法登录/刷新会话，并会在鉴权时被拒绝访问需要登录的接口。
                   </div>
                 </div>
+                {actionError && <p className="text-danger text-sm">{actionError}</p>}
               </ModalBody>
               <ModalFooter>
                 <Button
                   variant="flat"
                   onPress={() => {
                     if (confirmingDisable) return;
+                    setActionError("");
                     onClose();
                   }}
                 >
@@ -267,8 +276,11 @@ export default function AdminUsersPage() {
                     if (!pendingDisableUser) return;
                     setConfirmingDisable(true);
                     try {
-                      await handleSetStatus(pendingDisableUser.id, "disabled");
-                      onClose();
+                      const ok = await handleSetStatus(
+                        pendingDisableUser.id,
+                        "disabled",
+                      );
+                      if (ok) onClose();
                     } finally {
                       setConfirmingDisable(false);
                     }

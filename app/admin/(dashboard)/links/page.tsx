@@ -55,6 +55,7 @@ export default function AdminLinksPage() {
   const [logo, setLogo] = useState("");
   const [description, setDescription] = useState("");
   const [creating, setCreating] = useState(false);
+  const [createError, setCreateError] = useState("");
 
   const [editOpen, setEditOpen] = useState(false);
   const [editId, setEditId] = useState<number | null>(null);
@@ -65,6 +66,7 @@ export default function AdminLinksPage() {
   const [editStatus, setEditStatus] = useState("active");
   const [editSortOrder, setEditSortOrder] = useState<number | string>(0);
   const [updating, setUpdating] = useState(false);
+  const [editError, setEditError] = useState("");
 
   const {
     isOpen: deleteOpen,
@@ -73,6 +75,7 @@ export default function AdminLinksPage() {
   } = useDisclosure();
   const [pendingDelete, setPendingDelete] = useState<LinkDetail | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
 
   const loadLinks = useCallback(async () => {
     setLoading(true);
@@ -100,6 +103,7 @@ export default function AdminLinksPage() {
   const handleCreate = async () => {
     if (!name || !url) return;
     setCreating(true);
+    setCreateError("");
     try {
       await createLink({
         name,
@@ -113,8 +117,8 @@ export default function AdminLinksPage() {
       setUrl("");
       setLogo("");
       setDescription("");
-    } catch {
-      // Ignore 忽略错误。
+    } catch (e: unknown) {
+      setCreateError(e instanceof Error ? e.message : "创建失败");
     } finally {
       setCreating(false);
     }
@@ -128,12 +132,14 @@ export default function AdminLinksPage() {
     setEditDescription(l.description || "");
     setEditStatus(l.status || "active");
     setEditSortOrder(l.sort_order ?? 0);
+    setEditError("");
     setEditOpen(true);
   };
 
   const handleUpdate = async () => {
     if (!editId || !editName || !editUrl) return;
     setUpdating(true);
+    setEditError("");
     try {
       await updateLink(editId, {
         name: editName,
@@ -145,8 +151,8 @@ export default function AdminLinksPage() {
       });
       setEditOpen(false);
       await loadLinks();
-    } catch {
-      // Ignore 忽略错误。
+    } catch (e: unknown) {
+      setEditError(e instanceof Error ? e.message : "保存失败");
     } finally {
       setUpdating(false);
     }
@@ -157,6 +163,7 @@ export default function AdminLinksPage() {
 
     if (!l) return;
     setPendingDelete(l);
+    setDeleteError("");
     openDelete();
   };
 
@@ -207,6 +214,7 @@ export default function AdminLinksPage() {
           >
             添加
           </Button>
+          {createError && <p className="text-danger text-sm">{createError}</p>}
         </CardBody>
       </Card>
 
@@ -312,7 +320,13 @@ export default function AdminLinksPage() {
         </>
       )}
 
-      <Modal isOpen={editOpen} onOpenChange={setEditOpen}>
+      <Modal
+        isOpen={editOpen}
+        onOpenChange={(open) => {
+          setEditOpen(open);
+          if (!open) setEditError("");
+        }}
+      >
         <ModalContent>
           {() => (
             <>
@@ -363,6 +377,7 @@ export default function AdminLinksPage() {
                   value={editDescription}
                   onValueChange={setEditDescription}
                 />
+                {editError && <p className="text-danger text-sm">{editError}</p>}
               </ModalBody>
               <ModalFooter>
                 <Button variant="light" onPress={() => setEditOpen(false)}>
@@ -387,6 +402,7 @@ export default function AdminLinksPage() {
           closeDelete();
           setPendingDelete(null);
           setDeleting(false);
+          setDeleteError("");
         }}
       >
         <ModalContent>
@@ -401,6 +417,7 @@ export default function AdminLinksPage() {
             <div className="rounded-lg bg-danger-50 p-3 text-sm text-danger-700 dark:bg-danger-50/10 dark:text-danger-400">
               删除后不可恢复。
             </div>
+            {deleteError && <p className="text-danger text-sm">{deleteError}</p>}
           </ModalBody>
           <ModalFooter>
             <Button
@@ -409,6 +426,7 @@ export default function AdminLinksPage() {
                 if (deleting) return;
                 closeDelete();
                 setPendingDelete(null);
+                setDeleteError("");
               }}
             >
               取消
@@ -420,12 +438,13 @@ export default function AdminLinksPage() {
                 if (!pendingDelete) return;
                 setDeleting(true);
                 try {
+                  setDeleteError("");
                   await deleteLink(pendingDelete.id);
                   await loadLinks();
                   closeDelete();
                   setPendingDelete(null);
-                } catch {
-                  // Ignore 忽略错误。
+                } catch (e: unknown) {
+                  setDeleteError(e instanceof Error ? e.message : "删除失败");
                 } finally {
                   setDeleting(false);
                 }

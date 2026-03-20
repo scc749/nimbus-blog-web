@@ -39,6 +39,7 @@ export default function AdminFeedbacksPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [statusFilter, setStatusFilter] = useState("");
   const [loading, setLoading] = useState(true);
+  const [actionError, setActionError] = useState("");
   const [detail, setDetail] = useState<FeedbackDetail | null>(null);
   const { isOpen: detailOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -93,11 +94,12 @@ export default function AdminFeedbacksPage() {
 
   const handleStatusChange = async (id: number, newStatus: string) => {
     try {
+      setActionError("");
       await updateFeedbackStatus(id, { status: newStatus });
       fetchFeedbacks();
       if (detail?.id === id) setDetail({ ...detail, status: newStatus });
-    } catch {
-      // Ignore 忽略错误。
+    } catch (e: unknown) {
+      setActionError(e instanceof Error ? e.message : "操作失败");
     }
   };
 
@@ -143,6 +145,8 @@ export default function AdminFeedbacksPage() {
         <SelectItem key="resolved">已解决</SelectItem>
         <SelectItem key="closed">已关闭</SelectItem>
       </Select>
+
+      {actionError && <p className="text-danger text-sm">{actionError}</p>}
 
       {loading ? (
         <div className="flex justify-center py-12">
@@ -225,7 +229,14 @@ export default function AdminFeedbacksPage() {
       </div>
 
       {/* Detail Modal */}
-      <Modal isOpen={detailOpen} size="lg" onClose={onClose}>
+      <Modal
+        isOpen={detailOpen}
+        size="lg"
+        onClose={() => {
+          setActionError("");
+          onClose();
+        }}
+      >
         <ModalContent>
           {detail && (
             <>
@@ -259,6 +270,9 @@ export default function AdminFeedbacksPage() {
                   <span className="text-default-500">内容：</span>
                   <p className="mt-1">{detail.message}</p>
                 </div>
+                {actionError && (
+                  <p className="text-danger text-sm">{actionError}</p>
+                )}
               </ModalBody>
               <ModalFooter>
                 <div className="flex gap-2">
@@ -306,6 +320,7 @@ export default function AdminFeedbacksPage() {
           closeDelete();
           setPendingDelete(null);
           setDeleting(false);
+          setActionError("");
         }}
       >
         <ModalContent>
@@ -320,6 +335,7 @@ export default function AdminFeedbacksPage() {
             <div className="rounded-lg bg-danger-50 p-3 text-sm text-danger-700 dark:bg-danger-50/10 dark:text-danger-400">
               删除后不可恢复。
             </div>
+            {actionError && <p className="text-danger text-sm">{actionError}</p>}
           </ModalBody>
           <ModalFooter>
             <Button
@@ -328,6 +344,7 @@ export default function AdminFeedbacksPage() {
                 if (deleting) return;
                 closeDelete();
                 setPendingDelete(null);
+                setActionError("");
               }}
             >
               取消
@@ -339,13 +356,14 @@ export default function AdminFeedbacksPage() {
                 if (!pendingDelete) return;
                 setDeleting(true);
                 try {
+                  setActionError("");
                   await deleteFeedback(pendingDelete.id);
                   fetchFeedbacks();
                   if (detail?.id === pendingDelete.id) onClose();
                   closeDelete();
                   setPendingDelete(null);
-                } catch {
-                  // Ignore 忽略错误。
+                } catch (e: unknown) {
+                  setActionError(e instanceof Error ? e.message : "删除失败");
                 } finally {
                   setDeleting(false);
                 }
