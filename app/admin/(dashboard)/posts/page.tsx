@@ -210,7 +210,7 @@ export default function AdminPostsPage() {
                 <TableCell>
                   <Link
                     as={NextLink}
-                    className="max-w-xs block"
+                    className="w-full block"
                     color="foreground"
                     href={`/admin/posts/${post.id}`}
                   >
