@@ -137,10 +137,14 @@ export function ArticleCard({
           </div>
 
           <Link
-            className="block text-xl font-bold leading-7 text-foreground hover:text-primary transition-colors line-clamp-2 min-h-14"
+            className="block text-xl font-bold leading-7 text-foreground hover:text-primary transition-colors min-h-14"
             href={`/post/${post.slug}`}
           >
-            {post.title}
+            <TruncatedText
+              multiLine
+              className="line-clamp-2"
+              text={post.title}
+            />
           </Link>
 
           <div className="flex items-center gap-3 text-sm text-default-500">

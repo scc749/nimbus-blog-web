@@ -214,7 +214,10 @@ export default function AdminPostsPage() {
                     color="foreground"
                     href={`/admin/posts/${post.id}`}
                   >
-                    <TruncatedText className="truncate" text={post.title} />
+                    <TruncatedText
+                      className="block w-full truncate"
+                      text={post.title}
+                    />
                   </Link>
                 </TableCell>
                 <TableCell>
@@ -307,7 +310,9 @@ export default function AdminPostsPage() {
             <div className="rounded-lg bg-danger-50 p-3 text-sm text-danger-700 dark:bg-danger-50/10 dark:text-danger-400">
               删除后不可恢复。
             </div>
-            {deleteError && <p className="text-danger text-sm">{deleteError}</p>}
+            {deleteError && (
+              <p className="text-danger text-sm">{deleteError}</p>
+            )}
           </ModalBody>
           <ModalFooter>
             <Button
