@@ -80,12 +80,18 @@ export function ArticleCard({
               <div className="absolute top-2 right-2 z-10">
                 <Chip
                   classNames={{
-                    base: "bg-gradient-to-br from-indigo-500 to-pink-500 border-small border-white/50 shadow-pink-500/30",
-                    content: "drop-shadow shadow-black text-white text-[10px] font-semibold",
+                    base: "bg-warning-50/80 dark:bg-warning-500/20 border-warning-200/50 backdrop-blur-md shadow-sm",
+                    content:
+                      "text-warning-700 dark:text-warning-400 text-[10px] font-semibold tracking-wider",
                   }}
                   size="sm"
-                  startContent={<PinIcon className="text-white" size={12} />}
-                  variant="shadow"
+                  startContent={
+                    <PinIcon
+                      className="text-warning-600 dark:text-warning-400 ml-1"
+                      size={12}
+                    />
+                  }
+                  variant="bordered"
                 >
                   置顶
                 </Chip>

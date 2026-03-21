@@ -82,11 +82,9 @@ export default function Home() {
       <section className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
         <div className="flex-1 text-center lg:text-left">
           <div className="mb-6">
-            <h1 className="text-4xl md:text-5xl font-bold">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
               你好，我是&nbsp;
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                {profileName}
-              </span>
+              <span className="text-primary">{profileName}</span>
             </h1>
             {siteHero && (
               <p className="mt-4 text-lg text-default-600 whitespace-pre-line">
@@ -239,9 +237,16 @@ export default function Home() {
             <p className="mt-2 mb-6 text-default-600">
               我熟悉并经常使用的技术和工具
             </p>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-2 md:gap-3">
               {techStack.map((skill) => (
-                <Chip key={skill} color="secondary" size="lg" variant="flat">
+                <Chip
+                  key={skill}
+                  className="hover:-translate-y-0.5 transition-transform cursor-default bg-default-100/50 dark:bg-default-50/20 border-default-200"
+                  color="default"
+                  radius="sm"
+                  size="md"
+                  variant="bordered"
+                >
                   {skill}
                 </Chip>
               ))}

@@ -152,7 +152,7 @@ export default function AboutPage() {
       {techStack.length > 0 && (
         <Card className="mb-8">
           <CardHeader>
-            <h3 className="text-xl font-bold">技能栈</h3>
+            <h3 className="text-xl font-bold">技术栈</h3>
           </CardHeader>
           <CardBody>
             <div className="flex flex-wrap gap-2">
