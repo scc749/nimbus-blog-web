@@ -178,7 +178,13 @@ export default function AboutPage() {
                 <div key={i}>
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-2">
                     <h4 className="font-semibold text-lg">{exp.title}</h4>
-                    <Chip color="secondary" size="sm" variant="flat">
+                    <Chip
+                      className="text-default-500 border-default-200/50 bg-default-50/50"
+                      color="default"
+                      radius="sm"
+                      size="sm"
+                      variant="bordered"
+                    >
                       {exp.period}
                     </Chip>
                   </div>
