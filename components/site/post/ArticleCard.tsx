@@ -103,10 +103,19 @@ export function ArticleCard({
             <div className="flex flex-wrap items-center gap-2">
               {post.category && (
                 <Chip
+                  classNames={
+                    activeCategoryId === post.category.id
+                      ? undefined
+                      : {
+                          base: "bg-sky-50/80 dark:bg-sky-500/20 border-sky-200/60 dark:border-sky-500/30",
+                          content:
+                            "text-sky-700 dark:text-sky-300 text-[11px] font-medium",
+                        }
+                  }
                   color={
                     activeCategoryId === post.category.id
                       ? "primary"
-                      : "secondary"
+                      : "default"
                   }
                   size="sm"
                   variant={
