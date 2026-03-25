@@ -702,8 +702,11 @@ function WorkExpEditor({
                 value={exp.period}
                 onValueChange={(v) => update(i, "period", v)}
               />
-              <Input
+              <Textarea
+                className="md:col-span-2"
                 label="描述"
+                minRows={5}
+                placeholder="请输入工作内容、负责事项、产出与成果等"
                 size="sm"
                 value={exp.description}
                 onValueChange={(v) => update(i, "description", v)}
