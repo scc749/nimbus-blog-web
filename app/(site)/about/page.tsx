@@ -39,6 +39,10 @@ function parseJSON<T>(raw: string, fallback: T): T {
   }
 }
 
+function formatProjectSourceText(url: string): string {
+  return url.replace(/^https?:\/\//, "").replace(/\/+$/, "");
+}
+
 export default function AboutPage() {
   const [settings, setSettings] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
@@ -225,22 +229,30 @@ export default function AboutPage() {
                   key={i}
                   className="p-4 border border-default-200 rounded-lg"
                 >
-                  <h4 className="font-semibold mb-2">{proj.name}</h4>
+                  <h4 className="font-semibold mb-2 flex flex-wrap items-center gap-2">
+                    <span>{proj.name}</span>
+                    {proj.open_source_url && (
+                      <Link
+                        isExternal
+                        className="text-xs text-default-500 hover:text-primary underline-offset-4 hover:underline"
+                        href={proj.open_source_url}
+                      >
+                        {formatProjectSourceText(proj.open_source_url)}
+                      </Link>
+                    )}
+                  </h4>
                   <p className="text-default-600 text-sm mb-3">
                     {proj.description}
                   </p>
-                  {proj.open_source_url && (
-                    <Link
-                      isExternal
-                      className="text-sm mb-3 inline-block"
-                      href={proj.open_source_url}
-                    >
-                      开源地址
-                    </Link>
-                  )}
                   <div className="flex flex-wrap gap-1">
                     {proj.tech.map((t) => (
-                      <Chip key={t} size="sm" variant="bordered">
+                      <Chip
+                        key={t}
+                        className="bg-default-100/60 text-default-600"
+                        radius="sm"
+                        size="sm"
+                        variant="flat"
+                      >
                         {t}
                       </Chip>
                     ))}
