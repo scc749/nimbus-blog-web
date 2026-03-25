@@ -17,12 +17,14 @@ import { title, subtitle } from "@/components/common/primitives";
 interface WorkExp {
   title: string;
   company: string;
+  company_intro?: string;
   period: string;
   description: string;
 }
 
 interface ProjectExp {
   name: string;
+  open_source_url?: string;
   description: string;
   tech: string[];
 }
@@ -188,7 +190,17 @@ export default function AboutPage() {
                       {exp.period}
                     </Chip>
                   </div>
-                  <p className="text-primary font-medium mb-2">{exp.company}</p>
+                  <p className="mb-2">
+                    <span className="text-primary font-medium">
+                      {exp.company}
+                    </span>
+                    {exp.company_intro && (
+                      <span className="text-default-500">
+                        {" "}
+                        - {exp.company_intro}
+                      </span>
+                    )}
+                  </p>
                   <p className="text-default-600">{exp.description}</p>
                   {i < workExperiences.length - 1 && (
                     <Divider className="mt-6" />
@@ -200,11 +212,11 @@ export default function AboutPage() {
         </Card>
       )}
 
-      {/* 项目经验 */}
+      {/* 项目经历 */}
       {projectExperiences.length > 0 && (
         <Card className="mb-8">
           <CardHeader>
-            <h3 className="text-xl font-bold">项目经验</h3>
+            <h3 className="text-xl font-bold">项目经历</h3>
           </CardHeader>
           <CardBody>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -217,6 +229,15 @@ export default function AboutPage() {
                   <p className="text-default-600 text-sm mb-3">
                     {proj.description}
                   </p>
+                  {proj.open_source_url && (
+                    <Link
+                      isExternal
+                      className="text-sm mb-3 inline-block"
+                      href={proj.open_source_url}
+                    >
+                      开源地址
+                    </Link>
+                  )}
                   <div className="flex flex-wrap gap-1">
                     {proj.tech.map((t) => (
                       <Chip key={t} size="sm" variant="bordered">

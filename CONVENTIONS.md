@@ -655,7 +655,7 @@ export default SearchIcon;
 | `profile.qq_group_url` | QQ 群链接 | 关于页、Footer |
 | `profile.email` | 联系邮箱 | Footer（支持区）、关于页 |
 | `profile.work_experiences` | 工作经历（JSON 数组） | 关于页 |
-| `profile.project_experiences` | 项目经验（JSON 数组） | 关于页 |
+| `profile.project_experiences` | 项目经历（JSON 数组） | 关于页 |
 
 获取方式：
 - 前台页面与组件（Navbar/Footer/首页/关于等）为 Client Component，在 `useEffect` 中通过 `listSettings()` 或 `fetchSettingsMap()` 获取

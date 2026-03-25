@@ -151,11 +151,13 @@ const profileFields: FieldDef[] = [
 interface WorkExp {
   title: string;
   company: string;
+  company_intro?: string;
   period: string;
   description: string;
 }
 interface ProjectExp {
   name: string;
+  open_source_url?: string;
   description: string;
   tech: string[];
 }
@@ -637,7 +639,16 @@ function WorkExpEditor({
   };
 
   const add = () =>
-    commit([...items, { title: "", company: "", period: "", description: "" }]);
+    commit([
+      ...items,
+      {
+        title: "",
+        company: "",
+        company_intro: "",
+        period: "",
+        description: "",
+      },
+    ]);
   const remove = (i: number) => commit(items.filter((_, idx) => idx !== i));
 
   return (
@@ -696,6 +707,12 @@ function WorkExpEditor({
                 onValueChange={(v) => update(i, "company", v)}
               />
               <Input
+                label="公司简介"
+                size="sm"
+                value={exp.company_intro || ""}
+                onValueChange={(v) => update(i, "company_intro", v)}
+              />
+              <Input
                 label="时间段"
                 placeholder="如 2020 - 2022"
                 size="sm"
@@ -744,7 +761,11 @@ function ProjectExpEditor({
     onChange(next);
   };
 
-  const update = (i: number, field: "name" | "description", v: string) => {
+  const update = (
+    i: number,
+    field: "name" | "open_source_url" | "description",
+    v: string,
+  ) => {
     const next = [...items];
 
     next[i] = { ...next[i], [field]: v };
@@ -771,7 +792,11 @@ function ProjectExpEditor({
     commit(next);
   };
 
-  const add = () => commit([...items, { name: "", description: "", tech: [] }]);
+  const add = () =>
+    commit([
+      ...items,
+      { name: "", open_source_url: "", description: "", tech: [] },
+    ]);
   const remove = (i: number) => commit(items.filter((_, idx) => idx !== i));
 
   return (
@@ -824,7 +849,16 @@ function ProjectExpEditor({
                 onValueChange={(v) => update(i, "name", v)}
               />
               <Input
+                label="开源地址"
+                placeholder="如 https://github.com/xxx/yyy"
+                size="sm"
+                value={proj.open_source_url || ""}
+                onValueChange={(v) => update(i, "open_source_url", v)}
+              />
+              <Textarea
+                className="md:col-span-2"
                 label="项目描述"
+                minRows={4}
                 size="sm"
                 value={proj.description}
                 onValueChange={(v) => update(i, "description", v)}
