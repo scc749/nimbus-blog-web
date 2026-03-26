@@ -174,15 +174,15 @@ export default function AdminDashboardPage() {
                 <TableBody emptyContent="暂无文章">
                   {data.posts.items.map((post) => (
                     <TableRow key={post.id}>
-                      <TableCell>
+                      <TableCell className="max-w-xs">
                         <Link
                           as={NextLink}
-                          className="max-w-xs block"
+                          className="block"
                           color="foreground"
                           href={`/admin/posts/${post.id}`}
                         >
                           <TruncatedText
-                            className="truncate"
+                            className="block truncate"
                             text={post.title}
                           />
                         </Link>
@@ -239,7 +239,7 @@ export default function AdminDashboardPage() {
                       </TableCell>
                       <TableCell>
                         <TruncatedText
-                          className="truncate max-w-xs text-default-600 text-sm"
+                          className="block truncate max-w-xs text-default-600 text-sm"
                           text={c.content}
                         />
                       </TableCell>

@@ -38,7 +38,6 @@ import {
   EyeIcon,
   PlusIcon,
 } from "@/components/common/icons";
-import { TruncatedText } from "@/components/common/utility";
 
 export default function AdminPostsPage() {
   const [posts, setPosts] = useState<AdminPostSummary[]>([]);
@@ -178,106 +177,126 @@ export default function AdminPostsPage() {
           <Spinner size="lg" />
         </div>
       ) : (
-        <Table
-          aria-label="Posts table"
-          sortDescriptor={{ column: sortBy, direction: sortOrder }}
-          onSortChange={(d) => {
-            setSortBy(d.column as string);
-            setSortOrder(d.direction!);
-            setPage(1);
-          }}
-        >
-          <TableHeader>
-            <TableColumn>ID</TableColumn>
-            <TableColumn>标题</TableColumn>
-            <TableColumn>状态</TableColumn>
-            <TableColumn>分类</TableColumn>
-            <TableColumn key="views" allowsSorting>
+        <div className="w-full overflow-x-hidden">
+          <Table
+            removeWrapper
+            aria-label="Posts table"
+            className="w-full [&_table]:w-full [&_table]:table-fixed"
+            sortDescriptor={{ column: sortBy, direction: sortOrder }}
+            onSortChange={(d) => {
+              setSortBy(d.column as string);
+              setSortOrder(d.direction!);
+              setPage(1);
+            }}
+          >
+            <TableHeader>
+            <TableColumn className="w-16 whitespace-nowrap">ID</TableColumn>
+            <TableColumn className="min-w-0">标题</TableColumn>
+            <TableColumn className="w-28 whitespace-nowrap">状态</TableColumn>
+            <TableColumn className="w-28 whitespace-nowrap">分类</TableColumn>
+            <TableColumn
+              key="views"
+              allowsSorting
+              className="w-16 whitespace-nowrap"
+            >
               浏览
             </TableColumn>
-            <TableColumn key="likes" allowsSorting>
+            <TableColumn
+              key="likes"
+              allowsSorting
+              className="w-16 whitespace-nowrap"
+            >
               点赞
             </TableColumn>
-            <TableColumn key="created_at" allowsSorting>
+            <TableColumn
+              key="created_at"
+              allowsSorting
+              className="w-28 whitespace-nowrap"
+            >
               发布时间
             </TableColumn>
-            <TableColumn>操作</TableColumn>
-          </TableHeader>
-          <TableBody emptyContent="暂无文章">
-            {posts.map((post) => (
-              <TableRow key={post.id}>
-                <TableCell>{post.id}</TableCell>
-                <TableCell>
-                  <Link
-                    as={NextLink}
-                    className="w-full block"
-                    color="foreground"
-                    href={`/admin/posts/${post.id}`}
+            <TableColumn className="w-28 whitespace-nowrap">操作</TableColumn>
+            </TableHeader>
+            <TableBody emptyContent="暂无文章">
+              {posts.map((post) => (
+                <TableRow key={post.id}>
+                  <TableCell>{post.id}</TableCell>
+                  <TableCell className="min-w-0">
+                    <Link
+                      as={NextLink}
+                      className="block min-w-0 w-full"
+                      color="foreground"
+                      href={`/admin/posts/${post.id}`}
+                    >
+                      <span className="block w-full truncate" title={post.title}>
+                        {post.title}
+                      </span>
+                    </Link>
+                  </TableCell>
+                  <TableCell>
+                    <Chip
+                      color={post.status === "published" ? "success" : "default"}
+                      size="sm"
+                      variant="flat"
+                    >
+                      {post.status}
+                    </Chip>
+                  </TableCell>
+                  <TableCell
+                    className="max-w-28 whitespace-nowrap truncate"
+                    title={post.category?.name || "-"}
                   >
-                    <TruncatedText
-                      className="block w-full truncate"
-                      text={post.title}
-                    />
-                  </Link>
-                </TableCell>
-                <TableCell>
-                  <Chip
-                    color={post.status === "published" ? "success" : "default"}
-                    size="sm"
-                    variant="flat"
-                  >
-                    {post.status}
-                  </Chip>
-                </TableCell>
-                <TableCell>{post.category?.name || "-"}</TableCell>
-                <TableCell>{post.views}</TableCell>
-                <TableCell>{post.likes}</TableCell>
-                <TableCell className="text-default-400 text-sm">
-                  {post.published_at
-                    ? new Date(post.published_at).toLocaleDateString()
-                    : "-"}
-                </TableCell>
-                <TableCell>
-                  <div className="flex gap-1">
-                    <Tooltip content="查看">
-                      <Button
-                        isIconOnly
-                        as={NextLink}
-                        href={`/post/${post.slug}`}
-                        size="sm"
-                        variant="light"
-                      >
-                        <EyeIcon />
-                      </Button>
-                    </Tooltip>
-                    <Tooltip content="编辑">
-                      <Button
-                        isIconOnly
-                        as={NextLink}
-                        href={`/admin/posts/${post.id}`}
-                        size="sm"
-                        variant="light"
-                      >
-                        <EditIcon />
-                      </Button>
-                    </Tooltip>
-                    <Tooltip color="danger" content="删除">
-                      <Button
-                        isIconOnly
-                        color="danger"
-                        size="sm"
-                        variant="light"
-                        onPress={() => handleDelete(post.id)}
-                      >
-                        <DeleteIcon />
-                      </Button>
-                    </Tooltip>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+                    {post.category?.name || "-"}
+                  </TableCell>
+                  <TableCell>{post.views}</TableCell>
+                  <TableCell>{post.likes}</TableCell>
+                  <TableCell className="whitespace-nowrap text-default-400 text-sm">
+                    {post.published_at
+                      ? new Date(post.published_at).toLocaleDateString()
+                      : "-"}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex gap-1">
+                      <Tooltip content="查看">
+                        <Button
+                          isIconOnly
+                          as={NextLink}
+                          href={`/post/${post.slug}`}
+                          size="sm"
+                          variant="light"
+                        >
+                          <EyeIcon />
+                        </Button>
+                      </Tooltip>
+                      <Tooltip content="编辑">
+                        <Button
+                          isIconOnly
+                          as={NextLink}
+                          href={`/admin/posts/${post.id}`}
+                          size="sm"
+                          variant="light"
+                        >
+                          <EditIcon />
+                        </Button>
+                      </Tooltip>
+                      <Tooltip color="danger" content="删除">
+                        <Button
+                          isIconOnly
+                          color="danger"
+                          size="sm"
+                          variant="light"
+                          onPress={() => handleDelete(post.id)}
+                        >
+                          <DeleteIcon />
+                        </Button>
+                      </Tooltip>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       )}
 
       <div className="flex justify-center">
